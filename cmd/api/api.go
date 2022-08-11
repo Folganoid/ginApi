@@ -3,7 +3,11 @@ package main
 import (
 	"ginApi/internal/handler"
 	"ginApi/internal/service"
+	"ginApi/pkg/middleware"
 	"github.com/gin-gonic/gin"
+	"io"
+	"os"
+	ginDump "github.com/tpkeeper/gin-dump"
 )
 
 var (
@@ -11,8 +15,22 @@ var (
 	videoHandler handler.VideoHandler = handler.New(videoService)
 )
 
+func setupLogOutput() {
+	f, _ := os.Create("api.log")
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+}
+
 func main() {
-	server := gin.Default()
+
+	setupLogOutput()
+
+	server := gin.New()
+	server.Use(
+		gin.Recovery(),
+		middleware.Logger(),
+		middleware.BasicAuth(),
+		ginDump.Dump(),
+		)
 
 	server.GET("/videos", func(ctx *gin.Context) {
 		ctx.JSON(200, videoHandler.FindAll())
