@@ -6,6 +6,7 @@ import (
 	"ginApi/pkg/middleware"
 	"github.com/gin-gonic/gin"
 	"io"
+	"net/http"
 	"os"
 	ginDump "github.com/tpkeeper/gin-dump"
 )
@@ -25,19 +26,26 @@ func main() {
 	setupLogOutput()
 
 	server := gin.New()
+
 	server.Use(
 		gin.Recovery(),
 		middleware.Logger(),
 		middleware.BasicAuth(),
 		ginDump.Dump(),
-		)
+	)
 
 	server.GET("/videos", func(ctx *gin.Context) {
-		ctx.JSON(200, videoHandler.FindAll())
+		ctx.JSON(http.StatusOK, videoHandler.FindAll())
 	})
 
 	server.POST("/videos", func(ctx *gin.Context) {
-		ctx.JSON(200, videoHandler.Save(ctx))
+		err := videoHandler.Save(ctx)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		} else {
+			ctx.JSON(http.StatusOK, gin.H{"message": "Ok"})
+		}
+
 	})
 
 
