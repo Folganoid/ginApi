@@ -6,6 +6,7 @@ import (
 	"ginApi/pkg/validators"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"net/http"
 )
 
 var validate *validator.Validate
@@ -13,6 +14,7 @@ var validate *validator.Validate
 type VideoHandler interface {
 	FindAll() []model.Video
 	Save(ctx *gin.Context) error
+	ShowAll(ctx *gin.Context)
 }
 
 type handler struct {
@@ -44,4 +46,13 @@ func (h *handler) Save(ctx *gin.Context) error {
 
 	h.service.Save(video)
 	return nil
+}
+
+func (h *handler) ShowAll(ctx *gin.Context) {
+	videos := h.service.FindAll()
+	data := gin.H{
+		"title": "Video Page",
+		"videos": videos,
+	}
+	ctx.HTML(http.StatusOK, "index.html", data)
 }

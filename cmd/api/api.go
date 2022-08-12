@@ -26,6 +26,12 @@ func main() {
 	setupLogOutput()
 
 	server := gin.New()
+	server.Static("/css", "../../templates/css")
+	server.LoadHTMLFiles(
+		"/home/fg/go/src/ginApi/internal/templates/header.html",
+		"/home/fg/go/src/ginApi/internal/templates/index.html",
+		"/home/fg/go/src/ginApi/internal/templates/footer.html",
+	)
 
 	server.Use(
 		gin.Recovery(),
@@ -34,20 +40,28 @@ func main() {
 		ginDump.Dump(),
 	)
 
-	server.GET("/videos", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, videoHandler.FindAll())
-	})
+	apiRoutes := server.Group("/api")
+	{
+		apiRoutes.GET("/videos", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, videoHandler.FindAll())
+		})
 
-	server.POST("/videos", func(ctx *gin.Context) {
-		err := videoHandler.Save(ctx)
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		} else {
-			ctx.JSON(http.StatusOK, gin.H{"message": "Ok"})
+		apiRoutes.POST("/videos", func(ctx *gin.Context) {
+			err := videoHandler.Save(ctx)
+			if err != nil {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			} else {
+				ctx.JSON(http.StatusOK, gin.H{"message": "Ok"})
+			}
+
+		})
+
+		viewRoutes := server.Group("/view")
+		{
+			viewRoutes.GET("/videos", videoHandler.ShowAll)
 		}
 
-	})
-
+	}
 
 	server.Run(":8080")
 
