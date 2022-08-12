@@ -9,10 +9,7 @@
 [GIN-debug] GET    /view/videos              --> ginApi/internal/handler.VideoHandler.ShowAll-fm (5 handlers)
 [GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
 Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
-[GIN-debug] Listening and serving HTTP on :8080
-::1 - [12 Aug 22 18:53 EEST] GET:/view/videos - 200, 3.219362ms
-::1 - [12 Aug 22 18:54 EEST] POST:/api/videos - 400, 487.436µs
-::1 - [12 Aug 22 18:54 EEST] POST:/api/videos - 200, 213.352µs
-::1 - [12 Aug 22 18:54 EEST] POST:/api/videos - 200, 217.577µs
-::1 - [12 Aug 22 18:54 EEST] POST:/api/videos - 200, 160.858µs
-::1 - [12 Aug 22 18:54 EEST] GET:/view/videos - 200, 598.769µs
+[GIN-debug] Listening and serving HTTP on :5000
+::1 - [12 Aug 22 19:18 EEST] GET:/view/videos - 200, 840.4µs
+::1 - [12 Aug 22 19:18 EEST] GET:/favicon.ico - 401, 4.319µs
+::1 - [12 Aug 22 19:18 EEST] GET:/favicon.ico - 404, 166.049µs

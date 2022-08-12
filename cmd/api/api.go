@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	ginDump "github.com/tpkeeper/gin-dump"
+	"path/filepath"
+	"runtime"
 )
 
 var (
@@ -23,14 +25,19 @@ func setupLogOutput() {
 
 func main() {
 
+	var (
+		_, b, _, _ = runtime.Caller(0)
+		basepath   = filepath.Dir(b)
+	)
+
 	setupLogOutput()
 
 	server := gin.New()
 	server.Static("/css", "../../templates/css")
 	server.LoadHTMLFiles(
-		"/home/fg/go/src/ginApi/internal/templates/header.html",
-		"/home/fg/go/src/ginApi/internal/templates/index.html",
-		"/home/fg/go/src/ginApi/internal/templates/footer.html",
+		basepath + "/../../internal/templates/header.html",
+		basepath + "/../../internal/templates/index.html",
+		basepath + "/../../internal/templates/footer.html",
 	)
 
 	server.Use(
@@ -63,6 +70,11 @@ func main() {
 
 	}
 
-	server.Run(":8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "5000"
+	}
+
+	server.Run(":" + port)
 
 }
